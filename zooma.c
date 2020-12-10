@@ -99,7 +99,7 @@ void MoveFront(int x, int throwFlag) //Functie responsabila de miscarea cozii.
 void CheckCollision()
 {
     int follow = 0,k = 0;
-    while (tailY[k] != (hy - 1) && tailX[k]!= wx) k++;
+    while (tailY[k] != (hy - 1) && tailX[k]!= (wx + 1)) k++;
 
     if (tailC[k] == can)
     {
@@ -114,7 +114,7 @@ void CheckCollision()
             follow++;
             b++;
         }
-        if (follow >= 3)
+        if (follow >= 2)
             for (int i = f; i <= b; i++)
         {
             score += 100;
@@ -123,15 +123,16 @@ void CheckCollision()
         else
         {
             MoveFront(k, 1);
-            tailC[k] = can;
+            tailC[k - 1] = can;
         }
     }
     else
         {
             MoveFront(k, 1);
-            tailC[k] = can;
+            tailC[k - 1] = can;
         }
     can = AddBall();
+    follow = 0;
 }
 void Setup() //Seteaza parametrii la inceputul jocului.
 {
