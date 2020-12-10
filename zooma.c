@@ -84,16 +84,54 @@ char AddBall() //Functie care adauga mingi la sfarsitul cozii
         case 0 : return 'B'; break;
         case 1 : return 'R'; break;
         case 2 : return 'G'; break;
-        case 3: return 'W'; break;
+        default: return 'W'; break;
     }
 }
-void BallMove(int x) //Functie responsabila de miscarea cozii.
+void MoveFront(int x, int throwFlag) //Functie responsabila de miscarea cozii.
 {
     for (int i = 1; i < x; i++)
         tailC[i - 1] = tailC[i];
-    if (currentTail >= nTail) tailC[x - 1] = '*';
+    if (currentTail >= nTail || throwFlag == 1) tailC[x - 1] = '*';
     else tailC[x - 1] = AddBall();
     init = clock();
+}
+
+void CheckCollision()
+{
+    int follow = 0,k = 0;
+    while (tailY[k] != (hy - 1) && tailX[k]!= wx) k++;
+
+    if (tailC[k] == can)
+    {
+        int f = k, b = k;
+        while (tailC[f - 1] == can)
+        {
+            follow++;
+            f--;
+        }
+        while(tailC[b + 1] == can)
+        {
+            follow++;
+            b++;
+        }
+        if (follow >= 3)
+            for (int i = f; i <= b; i++)
+        {
+            score += 100;
+            tailC[i] = '*';
+        }
+        else
+        {
+            MoveFront(k, 1);
+            tailC[k] = can;
+        }
+    }
+    else
+        {
+            MoveFront(k, 1);
+            tailC[k] = can;
+        }
+    can = AddBall();
 }
 void Setup() //Seteaza parametrii la inceputul jocului.
 {
@@ -102,7 +140,7 @@ void Setup() //Seteaza parametrii la inceputul jocului.
 
     cx = 15;
     cy = 7;
-    can = 'A';
+    can = AddBall();
 
     hy = 2;
     wx = 2;
@@ -170,14 +208,15 @@ void Logic() //Functie ce raspunde de logica jocului.
         wx = wx;
     default: break;
     }
-    if (dir == E);
-
-    fin = clock();
-    if(fin - init >= 1000) BallMove(nTail);
-
-
     if (wx <= 0) wx = WIDTH - 1; else if (wx >= WIDTH) wx = 1;
     if (hy <= 0) hy = HEIGHT - 1; else if (hy >= HEIGHT - 1) hy = 1;
+
+    if (dir == E) CheckCollision();
+    fin = clock();
+    if(dir != E && fin - init >= 1000) MoveFront(nTail, 0);
+
+
+
 }
 int main()
 {
