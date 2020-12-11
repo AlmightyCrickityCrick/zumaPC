@@ -4,6 +4,7 @@
 #include <time.h>
 #include <conio.h>
 
+void welcome();//guide of the game
 void draw();//show the game board
 void LevelAssignBall();//show the path and characters on it
 char cannon();//generate a random bill for the cannon
@@ -25,6 +26,7 @@ const int cx = 15, cy = 10;//cannon coordinates
 
 int hy, wx, score = 0, v = 0, s = 0, x, y; // c - canon, h - cursor vertical, w - cursor orizontal.
 char can, nextcan; //caracterul curent si precedent din cannon
+int speed = 1000;//set the speed of the game
 int tailX[41];
 int tailY[41]; //coordonatele mingilor
 char tailC[41]; //caracterul mingilor
@@ -40,6 +42,7 @@ enum Direction dir = S;
 
 int main(){
     int i, j, k;
+    char c;
     srand((unsigned) time(0));
     //basic of the board
     for(i = 0; i < HEIGHT; i++)
@@ -50,18 +53,23 @@ int main(){
     can = cannon();
     nextcan = cannon();
     LevelAssignBall();
-    while(!gameOver){
-        cls();
-        draw();
-        Input();
-        Logic();
-        timer(timelim);
-        printf("\n   Time remaining: %2d", timelim);
-        printf("\n   Your score: %d", score);
-        Sleep(1000);
-    }
+    welcome();
+    scanf("%c", &c);
+    if(c == '\n'){
+        system("cls");
+        while(!gameOver){
+            cls();
+            draw();
+            Input();
+            Logic();
+            timer(timelim);
+            printf("\n   Time remaining: %2d", timelim);
+            printf("\n   Your score: %d", score);
+            Sleep(speed);
+        }}
     if(gameOver == 2) printf("\n   You lose");//check the conditions of losing
     else if(gameOver == 3) printf("\n   You win");//check the condition of winning
+
     return 0;
 }
 
@@ -208,7 +216,7 @@ void Logic() //Functie ce raspunde de logica jocului.
 
     if (dir == E) CheckCollision();
     fin = clock();
-    if(dir != E && fin - init >= 1000) MoveFront(nTail, 0);
+    if(dir != E && fin - init >= speed) MoveFront(nTail, 0);
     //check condition of loosing(reaching the end point)
     if(tailC[0] != '*') v++;
     else v = 0;
@@ -393,5 +401,13 @@ void timer(int sec){
     //check the condition of loosing (time limit exceeded)
     if(timelim == 0) gameOver = 2;
 
+}
+
+void welcome(){
+    //version 1
+    printf("\n   Welcome to the game!\n\n   Your goal is to destroy all bills in 90 seconds\n");
+    printf("   Press \"W\" to move up\n   Press \"S\" to move down\n   Press \"A\" to move left\n   Press \"D\" to move right\n   Press \"C\" to change the ball\n   Press \"X\" quit the game");
+    printf("\n   Press \"Enter\" to shoot");
+    printf("\n\n   Press \"Enter\" to continue");
 }
 
